@@ -116,7 +116,11 @@ def find_pngquant_cmd():
     if pngquant_cmd:
         return pngquant_cmd
     exe_extension = '.exe' if os.name == 'nt' else ''
-    search_paths = [Path(__file__).resolve().parent, Path(__file__).resolve().parent / 'ext']
+    # 兼容 PyInstaller 打包后的路径
+    if hasattr(sys, '_MEIPASS'):
+        search_paths = [Path(sys._MEIPASS), Path(sys._MEIPASS) / 'ext']
+    else:
+        search_paths = [Path(__file__).resolve().parent, Path(__file__).resolve().parent / 'ext']
     for search_path in search_paths:
         pngquant_exe_path = search_path / f'pngquant{exe_extension}'
         if pngquant_exe_path.exists():
